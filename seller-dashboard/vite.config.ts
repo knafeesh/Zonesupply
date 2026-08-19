@@ -17,6 +17,30 @@ export default defineConfig({
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
       },
+      '/auth': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
+      '/users': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
+      '/products': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
+      '/orders': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
+      '/wholesalers': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
+      '/banners': {
+        target: 'http://127.0.0.1:3000/api/v1',
+        changeOrigin: true,
+      },
       '/uploads': {
         target: 'http://127.0.0.1:3000',
         changeOrigin: true,
