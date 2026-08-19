@@ -71,21 +71,17 @@ const seedAdmin = async (): Promise<void> => {
       console.log('ℹ️  Admin user already exists');
     }
   } catch (err) {
-    console.error('Admin seed error:', err);
+    console.error('Admin seed notice:', err);
   }
 };
 
-const start = async () => {
-  await testConnection();
-  await seedAdmin();
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on http://0.0.0.0:${PORT} (all interfaces)`);
-    console.log(`📱 Phone access: http://10.150.35.51:${PORT}/api`);
-    console.log(`📊 Admin Panel API: http://localhost:${PORT}/api/admin`);
-    console.log(`🌐 Frontend: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-  });
-};
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server listening on 0.0.0.0:${PORT} (Render Ready)`);
+  console.log(`📊 Health check: http://0.0.0.0:${PORT}/api/health`);
+  console.log(`🌐 Frontend origin: ${process.env.FRONTEND_URL || '*'}`);
 
-start();
+  // Initialize DB in background without blocking server binding
+  testConnection().then(() => seedAdmin()).catch((e) => console.error('DB init warning:', e));
+});
 
 export default app;

@@ -144,21 +144,21 @@ export const initDatabase = async (): Promise<void> => {
 
 export const testConnection = async (): Promise<void> => {
   let attempts = 0;
-  while (attempts < 5) {
+  while (attempts < 10) {
     try {
       const client = await pool.connect();
-      console.log('✅ PostgreSQL connected successfully');
+      console.log('✅ PostgreSQL connected successfully to database');
       client.release();
       await initDatabase();
       return;
     } catch (error) {
       attempts++;
-      console.error(`❌ PostgreSQL connection attempt ${attempts} failed:`, (error as Error).message);
-      if (attempts >= 5) {
-        console.error('❌ Could not connect after 5 attempts. Exiting.');
-        process.exit(1);
+      console.error(`⚠️ PostgreSQL connection attempt ${attempts} failed:`, (error as Error).message);
+      if (attempts >= 10) {
+        console.error('⚠️ Could not connect after 10 attempts. Continuing in degraded mode.');
+        return;
       }
-      console.log(`⏳ Retrying in 3 seconds...`);
+      console.log(`⏳ Retrying database connection in 3 seconds...`);
       await new Promise((r) => setTimeout(r, 3000));
     }
   }
