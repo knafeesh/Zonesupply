@@ -30,17 +30,35 @@ import { SellerLedgerModule } from './seller-ledger/seller-ledger.module';
     // PostgreSQL via TypeORM
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (cfg: ConfigService) => ({
-        type: 'postgres',
-        host: cfg.get('DB_HOST', 'localhost'),
-        port: cfg.get<number>('DB_PORT', 5432),
-        database: cfg.get('DB_NAME', 'zonesupply_db'),
-        username: cfg.get('DB_USER', 'zonesupply_user'),
-        password: cfg.get('DB_PASS', 'zonesupply_pass'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: cfg.get('NODE_ENV') !== 'production', // auto-migration in dev
-        logging: cfg.get('NODE_ENV') === 'development',
-      }),
+      useFactory: (cfg: ConfigService) => {
+        const dbUrl = cfg.get<string>('DATABASE_URL');
+        if (dbUrl) {
+          return {
+            type: 'postgres',
+            url: dbUrl,
+            ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false },
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            synchronize: true, // auto-create tables on fresh database
+            logging: cfg.get('NODE_ENV') === 'development',
+          };
+        }
+
+        const host = cfg.get('DB_HOST', 'localhost');
+        const isCloudDb = host !== 'localhost' && host !== '127.0.0.1';
+
+        return {
+          type: 'postgres',
+          host,
+          port: cfg.get<number>('DB_PORT', 5432),
+          database: cfg.get('DB_NAME', 'zonesupply_db'),
+          username: cfg.get('DB_USER', 'zonesupply_user'),
+          password: cfg.get('DB_PASS', 'zonesupply_pass'),
+          ssl: isCloudDb ? { rejectUnauthorized: false } : false,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: true,
+          logging: cfg.get('NODE_ENV') === 'development',
+        };
+      },
     }),
 
     // Redis Cache
