@@ -1,0 +1,12 @@
+name: core
+description: Shared core package for ZoneSupply apps.
+version: 0.0.1
+publish_to: 'none'
+
+environment:
+  sdk: ^3.11.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1

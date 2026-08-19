@@ -1,0 +1,91 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import path from 'path';
+import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
+import { testConnection } from './config/database';
+import pool from './config/database';
+import { applicationRoutes } from './routes/applicationRoutes';
+import { adminRoutes } from './routes/adminRoutes';
+import { statusRoutes } from './routes/statusRoutes';
+
+dotenv.config();
+
+const app = express();
+
+// ─── Security Middleware ───────────────────────────────────────
+app.use(helmet());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+// ─── Body Parsers ──────────────────────────────────────────────
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// ─── Static Uploads ───────────────────────────────────────────
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// ─── Health Check ─────────────────────────────────────────────
+app.get('/api/health', (_req, res) => {
+  res.json({ success: true, message: 'Zone Store Membership API is running', version: '1.0.0' });
+});
+
+// ─── Routes ───────────────────────────────────────────────────
+app.use('/api', applicationRoutes);
+app.use('/api', statusRoutes);
+app.use('/api/admin', adminRoutes);
+
+// ─── 404 Handler ──────────────────────────────────────────────
+app.use((_req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// ─── Error Handler ────────────────────────────────────────────
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  console.error('Unhandled error:', err);
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(400).json({ success: false, message: 'File size exceeds 5MB limit.' });
+  }
+  res.status(500).json({ success: false, message: err.message || 'Internal server error' });
+});
+
+// ─── Start Server ─────────────────────────────────────────────
+const PORT: number = Number(process.env.PORT) || 5000;
+
+const seedAdmin = async (): Promise<void> => {
+  try {
+    const result = await pool.query('SELECT id FROM admin WHERE username = $1', ['admin']);
+    if (result.rows.length === 0) {
+      const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'Zone@123', 12);
+      await pool.query(
+        'INSERT INTO admin (username, password_hash) VALUES ($1, $2)',
+        ['admin', hash]
+      );
+      console.log('✅ Admin user created: admin / Zone@123');
+    } else {
+      console.log('ℹ️  Admin user already exists');
+    }
+  } catch (err) {
+    console.error('Admin seed error:', err);
+  }
+};
+
+const start = async () => {
+  await testConnection();
+  await seedAdmin();
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on http://0.0.0.0:${PORT} (all interfaces)`);
+    console.log(`📱 Phone access: http://10.150.35.51:${PORT}/api`);
+    console.log(`📊 Admin Panel API: http://localhost:${PORT}/api/admin`);
+    console.log(`🌐 Frontend: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+  });
+};
+
+start();
+
+export default app;
