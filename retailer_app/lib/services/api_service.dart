@@ -3,8 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.1.11:3000/api/v1'; // Wi-Fi mode (PC LAN IP)
-  // static const String baseUrl = 'http://localhost:3000/api/v1'; // USB mode (requires adb reverse tcp:3000 tcp:3000)
+  // Deployed Cloud Backend (Render) — works from any Wi-Fi or Mobile Data
+  static const String baseUrl = 'https://zonesupply-api.onrender.com/api/v1';
+  // static const String baseUrl = 'http://192.168.1.11:3000/api/v1'; // Local Wi-Fi mode
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   static const String _tokenKey = 'jwt_token';
 
@@ -45,8 +46,8 @@ class ApiService {
     return _handle(res);
   }
 
-  // PC WiFi IP — membership backend on port 5000
-  static const String membershipApiUrl = 'http://192.168.1.11:5000/api';
+  // Deployed Membership Backend (Render)
+  static const String membershipApiUrl = 'https://zonesupply-membership-api.onrender.com/api';
 
   static Future<Map<String, dynamic>> checkMembership(String identifier) async {
     try {
