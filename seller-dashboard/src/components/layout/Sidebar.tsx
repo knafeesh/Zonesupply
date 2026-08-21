@@ -126,7 +126,7 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
                 <img
                   src={
                     user.profilePicture.startsWith('/')
-                      ? `http://10.225.158.51:3000${user.profilePicture}`
+                      ? `${(import.meta.env.VITE_API_URL || '').replace(/\/api\/v1\/?$/, '')}${user.profilePicture}`
                       : user.profilePicture
                   }
                   alt={user.name}

@@ -5,10 +5,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 /// Default Membership Website URL
-/// Your PC WiFi IP: 10.225.158.51 — phone and PC must be on the same WiFi network.
-/// If your IP changes, update this constant and rebuild the app.
-/// For production, change to your deployed URL: https://your-site.vercel.app
-const String kMembershipWebsiteUrl = 'http://10.225.158.51:5173';
+/// Your PC WiFi IP: 192.168.1.11 — phone and PC must be on the same WiFi network.
+/// Run `ipconfig` in cmd to verify your PC's IP if it changes.
+const String kMembershipWebsiteUrl = 'http://192.168.1.11:5173';
 
 class MembershipWebViewScreen extends StatefulWidget {
   final String? initialUrl;

@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const String baseUrl = 'http://10.225.158.51:3000/api/v1'; // Wi-Fi mode (PC LAN IP)
+  static const String baseUrl = 'http://192.168.1.11:3000/api/v1'; // Wi-Fi mode (PC LAN IP)
   // static const String baseUrl = 'http://localhost:3000/api/v1'; // USB mode (requires adb reverse tcp:3000 tcp:3000)
   static const FlutterSecureStorage _storage = FlutterSecureStorage();
   static const String _tokenKey = 'jwt_token';
@@ -46,7 +46,7 @@ class ApiService {
   }
 
   // PC WiFi IP — membership backend on port 5000
-  static const String membershipApiUrl = 'http://10.225.158.51:5000/api';
+  static const String membershipApiUrl = 'http://192.168.1.11:5000/api';
 
   static Future<Map<String, dynamic>> checkMembership(String identifier) async {
     try {

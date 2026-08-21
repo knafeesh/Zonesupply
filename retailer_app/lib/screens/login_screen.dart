@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen>
               context,
               MaterialPageRoute(
                 builder: (_) => const MembershipWebViewScreen(
-                  initialUrl: 'http://10.225.158.51:5173/check-status',
+                  initialUrl: 'http://192.168.1.11:5173/check-status',
                 ),
               ),
             );

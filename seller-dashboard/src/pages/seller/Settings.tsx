@@ -206,7 +206,10 @@ export const Settings: React.FC = () => {
   const getFullImageUrl = (path?: string) => {
     if (!path) return '';
     if (path.startsWith('http://') || path.startsWith('https://')) return path;
-    if (path.startsWith('/')) return `http://10.225.158.51:3000${path}`;
+    if (path.startsWith('/')) {
+      const base = (import.meta.env.VITE_API_URL || '').replace(/\/api\/v1\/?$/, '');
+      return `${base}${path}`;
+    }
     return path;
   };
 
