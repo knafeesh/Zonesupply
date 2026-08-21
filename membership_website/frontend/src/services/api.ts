@@ -62,7 +62,7 @@ export const adminLogin = async (
   username: string,
   password: string
 ): Promise<ApiResponse<{ token: string; admin: { id: number; username: string } }>> => {
-  const response = await api.post('/admin/login', { username, password });
+  const response = await api.post('/auth/login', { email: username, password });
   return response.data;
 };
 
