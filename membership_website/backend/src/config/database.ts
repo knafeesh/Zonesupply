@@ -5,10 +5,14 @@ dotenv.config();
 
 const isProduction = process.env.NODE_ENV === 'production' || !!process.env.RENDER || !!process.env.DATABASE_URL;
 
-const pool = process.env.DATABASE_URL
+const DEFAULT_DB_URL = 'postgresql://neondb_owner:npg_9fYAtgaJWM4p@ep-winter-snow-axdhvl8n.c-4.us-east-2.aws.neon.tech/neondb?sslmode=require';
+
+const dbUrl = process.env.DATABASE_URL || (process.env.NODE_ENV === 'production' || !!process.env.RENDER ? DEFAULT_DB_URL : undefined);
+
+const pool = dbUrl
   ? new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL.includes('localhost') ? false : { rejectUnauthorized: false },
+      connectionString: dbUrl,
+      ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false },
       max: 10,
       idleTimeoutMillis: 60000,
       connectionTimeoutMillis: 10000,
