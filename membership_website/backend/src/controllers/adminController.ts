@@ -8,16 +8,17 @@ import { AuthRequest } from '../middleware/auth';
 // ─── Admin Login ─────────────────────────────────────────────
 export const adminLogin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, password } = req.body;
+    const username = req.body.username || req.body.email;
+    const password = req.body.password;
 
     if (!username || !password) {
-      res.status(400).json({ success: false, message: 'Username and password are required.' });
+      res.status(400).json({ success: false, message: 'Username (or email) and password are required.' });
       return;
     }
 
     const result = await pool.query(
-      'SELECT * FROM admin WHERE username = $1',
-      [username]
+      'SELECT * FROM admin WHERE username = $1 OR username = $2',
+      [username, username.toLowerCase()]
     );
 
     if (result.rows.length === 0) {

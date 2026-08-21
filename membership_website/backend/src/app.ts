@@ -40,6 +40,15 @@ app.use('/api', applicationRoutes);
 app.use('/api', statusRoutes);
 app.use('/api/admin', adminRoutes);
 
+// ─── Route Aliases ─────────────────────────────────────────────
+app.use('/admin', adminRoutes);
+app.use('/auth', adminRoutes);
+app.use('/api/auth', adminRoutes);
+app.use('/api/v1/auth', adminRoutes);
+app.use('/api/v1', applicationRoutes);
+app.use('/api/v1', statusRoutes);
+app.use('/api/v1/admin', adminRoutes);
+
 // ─── 404 Handler ──────────────────────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
