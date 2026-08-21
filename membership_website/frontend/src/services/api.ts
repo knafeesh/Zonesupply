@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { ApplicationFormData, ApiResponse, ApplicationStatus, AdminApplication, AdminStats } from '../types';
 
-const BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV
+    ? '/api'
+    : 'https://zonesupply-membership-api.onrender.com/api');
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 30000,
+  timeout: 45000,
 });
 
 // Add auth token to admin requests

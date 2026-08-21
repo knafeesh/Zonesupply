@@ -35,7 +35,11 @@ const AdminLogin = () => {
         setError(res.message || 'Invalid credentials');
       }
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Login failed. Please try again.');
+      if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        setError('Server is waking up (Render free tier). Please try again in 10 seconds.');
+      } else {
+        setError(err?.response?.data?.message || err?.message || 'Login failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,12 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
-  timeout: 30000,
+  baseURL:
+    import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV
+      ? '/api/v1'
+      : 'https://zonesupply-api.onrender.com/api/v1'),
+  timeout: 45000,
 });
 
 api.interceptors.request.use(
